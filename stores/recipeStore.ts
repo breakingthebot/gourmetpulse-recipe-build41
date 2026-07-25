@@ -1,5 +1,5 @@
 // stores/recipeStore.ts
-// Pinia store managing culinary recipe database, category filters, search query, modal state, serving multiplier scaling, step completion progress, interactive cooking countdown timers, printable grocery shopping list aggregator, nutritional macro breakdown meters, and custom user recipe submission form.
+// Pinia store managing culinary recipe database, category filters, search query, modal state, serving multiplier scaling, step completion progress, interactive cooking countdown timers, printable grocery shopping list aggregator, nutritional macro breakdown meters, custom user recipe submission form, and user reviews with star rating pickers.
 // Connects to: app.vue, components/*.vue
 // Created: 2026-07-25
 
@@ -27,6 +27,17 @@ export interface NutritionInfo {
   fiberGrams: number;
   sodiumMg: number;
   sugarGrams: number;
+}
+
+export interface RecipeReview {
+  id: string;
+  recipeId: string;
+  userName: string;
+  userAvatar: string;
+  rating: number;
+  comment: string;
+  chefTip?: string;
+  createdAt: string;
 }
 
 export interface Recipe {
@@ -228,6 +239,21 @@ export const INITIAL_RECIPES: Recipe[] = [
   }
 ];
 
+export const INITIAL_REVIEWS: Record<string, RecipeReview[]> = {
+  'rec-1': [
+    {
+      id: 'rev-101',
+      recipeId: 'rec-1',
+      userName: 'Chef Isabella Rossi',
+      userAvatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150',
+      rating: 5,
+      comment: 'An absolute masterpiece of Italian comfort food! The step timer for broth ladling kept my risotto texture silky and al dente.',
+      chefTip: 'Finish with extra grated Parmigiano and fresh cracked black pepper.',
+      createdAt: '2026-07-24'
+    }
+  ]
+};
+
 export const useRecipeStore = defineStore('recipe', {
   state: () => ({
     recipes: INITIAL_RECIPES as Recipe[],
@@ -246,7 +272,10 @@ export const useRecipeStore = defineStore('recipe', {
     isShoppingListDrawerOpen: false as boolean,
 
     // User Recipe Submission Form Modal State
-    isSubmissionModalOpen: false as boolean
+    isSubmissionModalOpen: false as boolean,
+
+    // User Reviews State
+    reviews: INITIAL_REVIEWS as Record<string, RecipeReview[]>
   }),
 
   getters: {
@@ -363,6 +392,12 @@ export const useRecipeStore = defineStore('recipe', {
       const checked = state.shoppingList.filter((i) => i.checked).length;
       const total = state.shoppingList.length;
       return { bought: checked, total, percentage: Math.round((checked / total) * 100) };
+    },
+
+    getReviewsForRecipe: (state) => {
+      return (recipeId: string): RecipeReview[] => {
+        return state.reviews[recipeId] || [];
+      };
     }
   },
 
@@ -527,6 +562,35 @@ export const useRecipeStore = defineStore('recipe', {
 
       this.recipes.unshift(newRecipe);
       this.isSubmissionModalOpen = false;
+    },
+
+    // User Review Actions
+    addRecipeReview(recipeId: string, rating: number, comment: string, chefTip?: string, userName?: string) {
+      if (!this.reviews[recipeId]) {
+        this.reviews[recipeId] = [];
+      }
+
+      const newReview: RecipeReview = {
+        id: `rev-${Date.now()}`,
+        recipeId,
+        userName: userName || 'Fellow Foodie',
+        userAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+        rating: Math.max(1, Math.min(5, rating)),
+        comment: comment.trim(),
+        chefTip: chefTip?.trim() || undefined,
+        createdAt: new Date().toISOString().split('T')[0]
+      };
+
+      this.reviews[recipeId].unshift(newReview);
+
+      // Recalculate average rating for recipe
+      const rec = this.recipes.find((r) => r.id === recipeId);
+      if (rec) {
+        const revs = this.reviews[recipeId];
+        const sum = revs.reduce((acc, r) => acc + r.rating, 0);
+        rec.rating = Math.round((sum / revs.length) * 10) / 10;
+        rec.reviewCount = revs.length;
+      }
     },
 
     exportShoppingTextList(): string {

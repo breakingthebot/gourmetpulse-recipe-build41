@@ -8,6 +8,7 @@ import { computed } from 'vue';
 import { useRecipeStore } from '../stores/recipeStore';
 import CookingTimerChecklist from './CookingTimerChecklist.vue';
 import NutritionalMacroMeters from './NutritionalMacroMeters.vue';
+import RecipeReviewsSection from './RecipeReviewsSection.vue';
 
 const recipeStore = useRecipeStore();
 const recipe = computed(() => recipeStore.activeRecipe);
@@ -100,6 +101,7 @@ const scaledIngredients = computed(() => {
           <!-- Interactive Step-by-Step Cooking Guide & Countdown Timers -->
           <div class="instructions-section">
             <CookingTimerChecklist :recipe-id="recipe.id" :instructions="recipe.instructions" />
+            <RecipeReviewsSection :recipe-id="recipe.id" class="margin-top-calc" />
           </div>
         </div>
       </div>
@@ -281,6 +283,10 @@ const scaledIngredients = computed(() => {
 
 .margin-bottom-calc {
   margin-bottom: 24px;
+}
+
+.margin-top-calc {
+  margin-top: 16px;
 }
 
 .detail-grid {

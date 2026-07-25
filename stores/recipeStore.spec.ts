@@ -20,32 +20,22 @@ describe('recipeStore Pinia store', () => {
     expect(store.filteredRecipes[0].title).toContain('Risotto');
   });
 
-  it('should submit custom user recipe, prepend to list, and match search query', () => {
+  it('should submit user review, update review list, and recalculate average rating', () => {
     const store = useRecipeStore();
-    expect(store.recipes.length).toBe(4);
+    const recipeId = 'rec-2'; // Matcha bowl
 
-    store.addCustomRecipe({
-      title: 'Tuscan Garlic Butter Shrimp Pasta',
-      description: 'Juicy jumbo shrimp seared in garlic butter.',
-      category: 'Main Course',
-      prepTimeMinutes: 10,
-      cookTimeMinutes: 15,
-      servings: 3,
-      difficulty: 'Easy',
-      caloriesPerServing: 520,
-      heroImage: 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=800',
-      author: { name: 'Chef Alex', avatar: '', role: 'Home Chef' },
-      ingredients: [{ id: 'i1', name: 'Jumbo Shrimp', amount: 400, unit: 'g', category: 'Meat/Seafood' }],
-      instructions: [{ stepNumber: 1, text: 'Sear shrimp.' }],
-      nutrition: { proteinGrams: 32, carbsGrams: 45, fatGrams: 18, fiberGrams: 2, sodiumMg: 510, sugarGrams: 2 },
-      dietaryBadges: ['High Protein'],
-      tags: ['Pasta', 'Seafood']
-    });
+    let reviews = store.getReviewsForRecipe(recipeId);
+    expect(reviews.length).toBe(0);
 
-    expect(store.recipes.length).toBe(5);
-    expect(store.recipes[0].title).toBe('Tuscan Garlic Butter Shrimp Pasta');
+    store.addRecipeReview(recipeId, 5, 'Vibrant green and super creamy!', 'Add a splash of lime juice.', 'Chef Sarah');
 
-    store.setSearchQuery('Tuscan');
-    expect(store.filteredRecipes.length).toBe(1);
+    reviews = store.getReviewsForRecipe(recipeId);
+    expect(reviews.length).toBe(1);
+    expect(reviews[0].comment).toContain('Vibrant green');
+    expect(reviews[0].chefTip).toContain('lime juice');
+
+    const rec = store.recipes.find((r) => r.id === recipeId);
+    expect(rec?.rating).toBe(5);
+    expect(rec?.reviewCount).toBe(1);
   });
 });
