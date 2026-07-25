@@ -10,6 +10,7 @@ import CookingTimerChecklist from './CookingTimerChecklist.vue';
 import NutritionalMacroMeters from './NutritionalMacroMeters.vue';
 import RecipeCommunityFeed from './RecipeCommunityFeed.vue';
 import BeveragePairingRecommender from './BeveragePairingRecommender.vue';
+import FlavorProfileWheel from './FlavorProfileWheel.vue';
 import RecipePriceEstimator from './RecipePriceEstimator.vue';
 import DietarySwapAssistant from './DietarySwapAssistant.vue';
 import CulinarySkillMeter from './CulinarySkillMeter.vue';
@@ -129,6 +130,9 @@ const scaledIngredients = computed(() => {
 
         <!-- Sommelier Wine & Beverage Pairing Recommender -->
         <BeveragePairingRecommender :recipe-id="recipe.id" class="margin-bottom-calc" />
+
+        <!-- Interactive Flavor Profile & Spice Wheel -->
+        <FlavorProfileWheel :recipe-id="recipe.id" class="margin-bottom-calc" />
 
         <!-- Culinary Substitution & Dietary Swaps Assistant -->
         <DietarySwapAssistant :recipe-id="recipe.id" class="margin-bottom-calc" />

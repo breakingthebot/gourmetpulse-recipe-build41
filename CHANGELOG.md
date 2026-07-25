@@ -5,6 +5,15 @@ All notable changes to **Build 41 — GourmetPulse SEO Culinary Recipe Applicati
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.19.0] - 2026-07-25
+
+### Added
+- Integrated **Interactive Flavor Profile & Spice Wheel Visualizer** in `services/flavorProfileService.ts` and `components/FlavorProfileWheel.vue`.
+- Added 5-point palate sensory intensity breakdown (`Savory`, `Umami`, `Acidic`, `Spicy`, `Sweet`).
+- Added dominant aroma flavor badge and spice wheel complementary pairings catalog (`Fresh Thyme`, `Cracked Black Pepper`, `Smoked Paprika`, `Lemon Zest`).
+- Embedded flavor visualizer into `RecipeDetailModal.vue`.
+- Added unit tests in `services/flavorProfileService.spec.ts`.
+
 ## [0.18.0] - 2026-07-25
 
 ### Added
