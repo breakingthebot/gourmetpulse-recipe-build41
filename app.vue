@@ -4,6 +4,7 @@
 <!-- Created: 2026-07-24 -->
 
 <script setup lang="ts">
+import { onMounted } from 'vue';
 import { useRecipeStore } from './stores/recipeStore';
 import RecipeFilterToolbar from './components/RecipeFilterToolbar.vue';
 import RecipeCard from './components/RecipeCard.vue';
@@ -14,6 +15,10 @@ import RecipeCookingModeModal from './components/RecipeCookingModeModal.vue';
 import './assets/css/main.css';
 
 const recipeStore = useRecipeStore();
+
+onMounted(() => {
+  recipeStore.fetchLiveApiRecipes('chicken');
+});
 </script>
 
 <template>
