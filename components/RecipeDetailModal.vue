@@ -6,6 +6,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useRecipeStore } from '../stores/recipeStore';
+import CookingTimerChecklist from './CookingTimerChecklist.vue';
 
 const recipeStore = useRecipeStore();
 const recipe = computed(() => recipeStore.activeRecipe);
@@ -92,15 +93,9 @@ const scaledIngredients = computed(() => {
             </ul>
           </div>
 
-          <!-- Step-by-Step Cooking Guide -->
-          <div class="instructions-section card">
-            <h3>👨‍🍳 Cooking Instructions:</h3>
-            <ol class="instruction-list">
-              <li v-for="(step, idx) in recipe.instructions" :key="idx" class="step-item">
-                <span class="step-num">{{ idx + 1 }}</span>
-                <span class="step-text">{{ step }}</span>
-              </li>
-            </ol>
+          <!-- Interactive Step-by-Step Cooking Guide & Countdown Timers -->
+          <div class="instructions-section">
+            <CookingTimerChecklist :recipe-id="recipe.id" :instructions="recipe.instructions" />
           </div>
         </div>
       </div>

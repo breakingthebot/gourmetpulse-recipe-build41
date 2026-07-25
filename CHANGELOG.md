@@ -5,6 +5,14 @@ All notable changes to **Build 41 — GourmetPulse SEO Culinary Recipe Applicati
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-07-25
+
+### Added
+- Built `components/CookingTimerChecklist.vue` providing step-by-step progress checklist with built-in countdown timers.
+- Updated `stores/recipeStore.ts` with timer state management, step completion tracking, and timer control actions (`startCookingTimer`, `pauseCookingTimer`, `resetCookingTimer`, `tickTimer`).
+- Integrated `CookingTimerChecklist.vue` into `components/RecipeDetailModal.vue`.
+- Added unit tests in `stores/recipeStore.spec.ts` asserting step completion progress calculation and timer state transitions.
+
 ## [0.1.0] - 2026-07-24
 
 ### Added
