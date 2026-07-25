@@ -9,9 +9,10 @@ import { useRecipeStore } from '../stores/recipeStore';
 import CookingTimerChecklist from './CookingTimerChecklist.vue';
 import NutritionalMacroMeters from './NutritionalMacroMeters.vue';
 import RecipeReviewsSection from './RecipeReviewsSection.vue';
+import SeoMetaJsonLd from './SeoMetaJsonLd.vue';
 
 const recipeStore = useRecipeStore();
-const recipe = computed(() => recipeStore.activeRecipe);
+const recipe = computed(() => recipeStore.activeRecipeModal);
 
 const scaledIngredients = computed(() => {
   if (!recipe.value) return [];
@@ -33,11 +34,11 @@ const scaledIngredients = computed(() => {
       <button @click="recipeStore.closeRecipeModal" class="close-btn">✕</button>
 
       <div class="modal-banner">
-        <img :src="recipe.imageUrl" :alt="recipe.title" class="banner-img" />
+        <img :src="recipe.heroImage" :alt="recipe.title" class="banner-img" />
         <div class="banner-overlay">
           <span class="category-tag">{{ recipe.category }}</span>
           <h2>{{ recipe.title }}</h2>
-          <p>{{ recipe.subtitle }}</p>
+          <p>{{ recipe.description }}</p>
         </div>
       </div>
 
