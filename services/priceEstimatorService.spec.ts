@@ -3,10 +3,17 @@
 // Created: 2026-07-25
 
 import { describe, it, expect } from 'vitest';
-import { calculateRecipeCostBreakdown, formatPriceCurrency } from './priceEstimatorService';
+import { calculateRecipeCostBreakdown, formatPriceCurrency, estimateIngredientUnitPriceUsd } from './priceEstimatorService';
 import type { Ingredient } from '../stores/recipeStore';
 
 describe('priceEstimatorService', () => {
+  it('should estimate ingredient unit prices accurately', () => {
+    expect(estimateIngredientUnitPriceUsd('Black Truffle', 'Pantry')).toBe(6.50);
+    expect(estimateIngredientUnitPriceUsd('Atlantic Salmon', 'Meat/Seafood')).toBe(4.20);
+    expect(estimateIngredientUnitPriceUsd('Olive Oil', 'Pantry', 'cups')).toBe(1.80);
+    expect(estimateIngredientUnitPriceUsd('Parmesan Cheese', 'Dairy')).toBe(1.85);
+  });
+
   it('should calculate total cost and cost per portion accurately', () => {
     const testIngredients: Ingredient[] = [
       { id: '1', name: 'Salmon Filet', amount: 2, unit: 'pcs', category: 'Meat/Seafood' },
