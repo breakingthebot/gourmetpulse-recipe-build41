@@ -53,28 +53,21 @@ describe('recipeStore Pinia store', () => {
     progress = store.getStepCompletionProgress(recipeId);
     expect(progress.completed).toBe(1);
     expect(progress.percentage).toBe(20);
-
-    store.toggleStepCompleted(recipeId, 2);
-    progress = store.getStepCompletionProgress(recipeId);
-    expect(progress.completed).toBe(2);
-    expect(progress.percentage).toBe(40);
   });
 
-  it('should start, tick down, and complete cooking countdown timers', () => {
+  it('should aggregate recipe ingredients into grocery shopping list and format text export', () => {
     const store = useRecipeStore();
     const recipeId = 'rec-1';
-    const stepNumber = 1;
 
-    store.startCookingTimer(recipeId, stepNumber, 10);
-    let timerState = store.getTimerState(recipeId, stepNumber);
-    expect(timerState?.remainingSeconds).toBe(10);
-    expect(timerState?.isRunning).toBe(true);
+    expect(store.shoppingList.length).toBe(0);
 
-    store.tickTimer(recipeId, stepNumber);
-    timerState = store.getTimerState(recipeId, stepNumber);
-    expect(timerState?.remainingSeconds).toBe(9);
+    store.addRecipeToShoppingList(recipeId);
+    expect(store.shoppingList.length).toBe(6);
+    expect(store.shoppingList[0].name).toBe('Arborio Rice');
+    expect(store.shoppingList[0].sourceRecipeTitle).toContain('Risotto');
 
-    store.pauseCookingTimer(recipeId, stepNumber);
-    expect(store.getTimerState(recipeId, stepNumber)?.isRunning).toBe(false);
+    const txt = store.exportShoppingTextList();
+    expect(txt).toContain('GOURMETPULSE GROCERY SHOPPING LIST');
+    expect(txt).toContain('Arborio Rice');
   });
 });

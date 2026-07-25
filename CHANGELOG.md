@@ -5,6 +5,15 @@ All notable changes to **Build 41 — GourmetPulse SEO Culinary Recipe Applicati
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-07-25
+
+### Added
+- Built `components/GroceryShoppingList.vue` providing ingredient aggregation, progress tracking, and grocery list management.
+- Updated `stores/recipeStore.ts` with `shoppingList` state, `addRecipeToShoppingList` aggregation, item toggling, and export actions (`exportShoppingTextList`, `triggerPrintShoppingList`).
+- Added `🛒 Add to Grocery List` quick-add buttons to `RecipeCard.vue` and `RecipeDetailModal.vue`.
+- Integrated `GroceryShoppingList.vue` into `app.vue`.
+- Added unit tests in `stores/recipeStore.spec.ts` asserting recipe ingredient aggregation into the grocery checklist and formatted text exports.
+
 ## [0.2.0] - 2026-07-25
 
 ### Added

@@ -102,8 +102,11 @@ const scaledIngredients = computed(() => {
 
       <div class="modal-footer">
         <button @click="recipeStore.closeRecipeModal" class="btn btn-secondary">Close Guide</button>
+        <button @click="recipeStore.addRecipeToShoppingList(recipe.id)" class="btn btn-secondary" style="border-color: rgba(245, 158, 11, 0.4); color: var(--accent-amber);">
+          🛒 Add All to Grocery List
+        </button>
         <button @click="recipeStore.toggleBookmark(recipe.id)" class="btn btn-primary">
-          {{ recipe.bookmarked ? '⭐ Saved to Favorites' : '☆ Save to Favorites' }}
+          {{ recipeStore.isBookmarked(recipe.id) ? '⭐ Saved to Favorites' : '☆ Save to Favorites' }}
         </button>
       </div>
     </div>

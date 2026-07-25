@@ -47,7 +47,13 @@ const recipeStore = useRecipeStore();
       <div class="card-footer-meta">
         <span class="meta-item">⏱️ {{ recipe.prepTimeMinutes + recipe.cookTimeMinutes }} mins</span>
         <span class="meta-item">🔥 {{ recipe.caloriesPerServing }} kcal</span>
-        <span class="meta-item star-rating">★ {{ recipe.rating.toFixed(1) }}</span>
+        <button 
+          @click.stop="recipeStore.addRecipeToShoppingList(recipe.id)" 
+          class="btn-add-shop"
+          title="Add ingredients to grocery shopping list"
+        >
+          🛒 Grocery List
+        </button>
       </div>
     </div>
   </div>
@@ -159,8 +165,20 @@ const recipeStore = useRecipeStore();
   color: var(--text-muted);
 }
 
-.star-rating {
+.btn-add-shop {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.3);
   color: var(--accent-amber);
-  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-add-shop:hover {
+  background: var(--accent-amber);
+  color: #000;
 }
 </style>

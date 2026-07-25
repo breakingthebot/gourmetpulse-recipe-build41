@@ -8,6 +8,7 @@ import { useRecipeStore } from './stores/recipeStore';
 import RecipeFilterToolbar from './components/RecipeFilterToolbar.vue';
 import RecipeCard from './components/RecipeCard.vue';
 import RecipeDetailModal from './components/RecipeDetailModal.vue';
+import GroceryShoppingList from './components/GroceryShoppingList.vue';
 import './assets/css/main.css';
 
 const recipeStore = useRecipeStore();
@@ -54,6 +55,11 @@ const recipeStore = useRecipeStore();
 
       <!-- Filter & Search Toolbar -->
       <RecipeFilterToolbar />
+
+      <!-- Grocery Shopping List Aggregator -->
+      <section class="margin-bottom">
+        <GroceryShoppingList />
+      </section>
 
       <!-- Recipe Catalog Gallery Grid -->
       <section v-if="recipeStore.filteredRecipes.length > 0" class="recipe-grid">
@@ -237,6 +243,10 @@ const recipeStore = useRecipeStore();
 
 .margin-top {
   margin-top: 16px;
+}
+
+.margin-bottom {
+  margin-bottom: 24px;
 }
 
 .app-footer {

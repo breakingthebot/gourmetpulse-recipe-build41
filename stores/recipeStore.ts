@@ -1,5 +1,5 @@
 // stores/recipeStore.ts
-// Pinia store managing culinary recipe database, category filters, search query, modal state, serving multiplier scaling, step completion progress, and interactive cooking countdown timers.
+// Pinia store managing culinary recipe database, category filters, search query, modal state, serving multiplier scaling, step completion progress, interactive cooking countdown timers, and printable grocery shopping list aggregator.
 // Connects to: app.vue, components/*.vue
 // Created: 2026-07-25
 
@@ -46,6 +46,16 @@ export interface ActiveTimerState {
   remainingSeconds: number;
   initialSeconds: number;
   isRunning: boolean;
+}
+
+export interface ShoppingListItem {
+  id: string;
+  name: string;
+  amount: number;
+  unit: string;
+  category: string;
+  checked: boolean;
+  sourceRecipeTitle: string;
 }
 
 export const INITIAL_RECIPES: Recipe[] = [
@@ -182,7 +192,11 @@ export const useRecipeStore = defineStore('recipe', {
 
     // Step Completion & Timers State
     completedSteps: {} as Record<string, number[]>,
-    activeTimers: {} as Record<string, ActiveTimerState>
+    activeTimers: {} as Record<string, ActiveTimerState>,
+
+    // Grocery Shopping List State
+    shoppingList: [] as ShoppingListItem[],
+    isShoppingListDrawerOpen: false as boolean
   }),
 
   getters: {
@@ -254,6 +268,13 @@ export const useRecipeStore = defineStore('recipe', {
         const key = `${recipeId}-${stepNumber}`;
         return state.activeTimers[key] || null;
       };
+    },
+
+    shoppingListProgress: (state) => {
+      if (state.shoppingList.length === 0) return { bought: 0, total: 0, percentage: 0 };
+      const checked = state.shoppingList.filter((i) => i.checked).length;
+      const total = state.shoppingList.length;
+      return { bought: checked, total, percentage: Math.round((checked / total) * 100) };
     }
   },
 
@@ -343,10 +364,115 @@ export const useRecipeStore = defineStore('recipe', {
         timer.remainingSeconds--;
         if (timer.remainingSeconds === 0) {
           timer.isRunning = false;
-          // Mark step as completed when timer finishes
           this.toggleStepCompleted(recipeId, stepNumber);
         }
       }
+    },
+
+    // Grocery Shopping List Actions
+    addRecipeToShoppingList(recipeId: string) {
+      const scaled = this.scaledIngredients(recipeId);
+      const rec = this.recipes.find((r) => r.id === recipeId);
+      if (!rec) return;
+
+      scaled.forEach((ing) => {
+        const existing = this.shoppingList.find(
+          (item) => item.name.toLowerCase() === ing.name.toLowerCase() && item.sourceRecipeTitle === rec.title
+        );
+
+        if (existing) {
+          existing.amount += ing.amount;
+        } else {
+          this.shoppingList.push({
+            id: `shop-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+            name: ing.name,
+            amount: ing.amount,
+            unit: ing.unit,
+            category: ing.category,
+            checked: false,
+            sourceRecipeTitle: rec.title
+          });
+        }
+      });
+
+      this.isShoppingListDrawerOpen = true;
+    },
+
+    toggleShoppingListItem(itemId: string) {
+      const item = this.shoppingList.find((i) => i.id === itemId);
+      if (item) {
+        item.checked = !item.checked;
+      }
+    },
+
+    removeShoppingListItem(itemId: string) {
+      const idx = this.shoppingList.findIndex((i) => i.id === itemId);
+      if (idx > -1) {
+        this.shoppingList.splice(idx, 1);
+      }
+    },
+
+    clearShoppingList() {
+      this.shoppingList = [];
+    },
+
+    toggleShoppingListDrawer() {
+      this.isShoppingListDrawerOpen = !this.isShoppingListDrawerOpen;
+    },
+
+    exportShoppingTextList(): string {
+      let txt = `=========================================\n`;
+      txt += ` GOURMETPULSE GROCERY SHOPPING LIST\n`;
+      txt += ` Generated: ${new Date().toLocaleDateString()}\n`;
+      txt += ` Items: ${this.shoppingListProgress.bought} / ${this.shoppingListProgress.total} Items Bought (${this.shoppingListProgress.percentage}%)\n`;
+      txt += `=========================================\n\n`;
+
+      const categories = ['Produce', 'Dairy', 'Pantry', 'Meat/Seafood', 'Spices'];
+
+      categories.forEach((cat) => {
+        const items = this.shoppingList.filter((i) => i.category === cat);
+        if (items.length > 0) {
+          txt += `[ ${cat.toUpperCase()} ]\n`;
+          items.forEach((i) => {
+            const check = i.checked ? '[x]' : '[ ]';
+            txt += `  ${check} ${i.amount} ${i.unit} ${i.name} (${i.sourceRecipeTitle})\n`;
+          });
+          txt += `\n`;
+        }
+      });
+
+      return txt;
+    },
+
+    triggerPrintShoppingList() {
+      const printWindow = window.open('', '_blank');
+      if (!printWindow) return;
+
+      const txtList = this.exportShoppingTextList();
+
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>GourmetPulse Grocery Shopping List</title>
+            <style>
+              body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 30px; color: #000; background: #fff; }
+              h2 { font-size: 24px; margin-bottom: 5px; color: #1e293b; }
+              .meta { font-size: 14px; color: #64748b; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+              pre { font-family: monospace; font-size: 14px; line-height: 1.5; white-space: pre-wrap; }
+            </style>
+          </head>
+          <body>
+            <h2>🛒 GourmetPulse Grocery Shopping List</h2>
+            <div class="meta">Generated: ${new Date().toLocaleDateString()}</div>
+            <pre>${txtList}</pre>
+            <script>
+              window.onload = function() { window.print(); window.close(); }
+            </script>
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
     }
   }
 });
