@@ -29,9 +29,9 @@ export function transformMealDBToRecipe(meal: MealDBItem): Recipe {
       let category: 'Produce' | 'Pantry' | 'Dairy' | 'Meat/Seafood' | 'Spices' = 'Pantry';
       const nameLower = name.toLowerCase();
 
-      if (nameLower.includes('chicken') || nameLower.includes('beef') || nameLower.includes('pork') || nameLower.includes('fish') || nameLower.includes('salmon') || nameLower.includes('shrimp') || nameLower.includes('bacon')) {
+      if (nameLower.includes('chicken') || nameLower.includes('beef') || nameLower.includes('pork') || nameLower.includes('fish') || nameLower.includes('salmon') || nameLower.includes('shrimp') || nameLower.includes('bacon') || nameLower.includes('saltfish')) {
         category = 'Meat/Seafood';
-      } else if (nameLower.includes('onion') || nameLower.includes('garlic') || nameLower.includes('lemon') || nameLower.includes('tomato') || nameLower.includes('herb') || nameLower.includes('mushroom') || nameLower.includes('spinach') || nameLower.includes('avocado')) {
+      } else if (nameLower.includes('onion') || nameLower.includes('garlic') || nameLower.includes('lemon') || nameLower.includes('tomato') || nameLower.includes('herb') || nameLower.includes('mushroom') || nameLower.includes('spinach') || nameLower.includes('avocado') || nameLower.includes('eggplant') || nameLower.includes('pumpkin') || nameLower.includes('callaloo')) {
         category = 'Produce';
       } else if (nameLower.includes('butter') || nameLower.includes('milk') || nameLower.includes('cream') || nameLower.includes('cheese') || nameLower.includes('parmesan')) {
         category = 'Dairy';
@@ -40,9 +40,11 @@ export function transformMealDBToRecipe(meal: MealDBItem): Recipe {
       }
 
       // Parse amount number from measure
-      const measureText = measure ? measure.trim() : '1';
+      const measureText = measure ? measure.trim() : '';
       const amountMatch = measureText.match(/[\d./]+/);
       let amount = 1;
+      let unit = measureText;
+
       if (amountMatch) {
         try {
           if (amountMatch[0].includes('/')) {
@@ -51,25 +53,45 @@ export function transformMealDBToRecipe(meal: MealDBItem): Recipe {
           } else {
             amount = parseFloat(amountMatch[0]);
           }
+          unit = measureText.replace(amountMatch[0], '').trim() || 'item';
         } catch {
           amount = 1;
+          unit = measureText || 'item';
         }
+      } else {
+        amount = 1;
+        unit = measureText || 'item';
       }
 
       ingredients.push({
         id: `ing-api-${meal.idMeal}-${i}`,
         name: name.trim(),
         amount: Math.round((amount || 1) * 10) / 10,
-        unit: measureText.replace(/[\d./]+/, '').trim() || 'portion',
+        unit: unit || 'item',
         category
       });
     }
   }
 
-  // Parse instructions into step objects
-  const rawSteps = meal.strInstructions
-    ? meal.strInstructions.split(/\r?\n/).filter(line => line.trim().length > 5)
-    : ['Follow standard cooking procedures.'];
+  // Parse instructions into step objects with smart sentence splitting
+  let rawSteps: string[] = [];
+  if (meal.strInstructions) {
+    // First try splitting by newlines
+    const lines = meal.strInstructions.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 5);
+    if (lines.length >= 3) {
+      rawSteps = lines;
+    } else {
+      // Split by sentence punctuation
+      rawSteps = meal.strInstructions
+        .split(/(?<=[.!?])\s+/)
+        .map(s => s.trim())
+        .filter(s => s.length > 10);
+    }
+  }
+
+  if (rawSteps.length === 0) {
+    rawSteps = ['Follow standard culinary preparation steps according to fresh ingredient proportions.'];
+  }
 
   const instructions: CookingStep[] = rawSteps.map((stepText, idx) => {
     let timerSeconds: number | undefined = undefined;
@@ -87,18 +109,22 @@ export function transformMealDBToRecipe(meal: MealDBItem): Recipe {
       }
     }
 
+    const cleanedText = stepText
+      .replace(/^(STEP\s*\d+|Step\s*\d+|\d+[\.\)]\s*)/i, '')
+      .trim();
+
     return {
       stepNumber: idx + 1,
-      text: stepText.trim().replace(/^\d+[\.\)]\s*/, ''),
+      text: cleanedText || stepText,
       timerSeconds,
-      tip: idx === 0 ? 'Ensure all ingredients are prepped before starting.' : undefined
+      tip: idx === 0 ? 'Mise en place: Prep all fresh ingredients before starting.' : undefined
     };
   });
 
   // Category mapping
   let category: 'Breakfast' | 'Main Course' | 'Dessert' | 'Vegan' | 'Gluten-Free' = 'Main Course';
   const apiCat = meal.strCategory ? meal.strCategory.toLowerCase() : '';
-  if (apiCat.includes('breakfast')) category = 'Breakfast';
+  if (apiCat.includes('breakfast') || meal.strMeal.toLowerCase().includes('breakfast')) category = 'Breakfast';
   else if (apiCat.includes('dessert')) category = 'Dessert';
   else if (apiCat.includes('vegan') || apiCat.includes('vegetarian')) category = 'Vegan';
 
@@ -108,13 +134,13 @@ export function transformMealDBToRecipe(meal: MealDBItem): Recipe {
     id: `rec-api-${meal.idMeal}`,
     title: meal.strMeal,
     slug: meal.strMeal.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''),
-    description: `Authentic ${meal.strArea || 'Gourmet'} ${meal.strMeal} prepared with fresh ingredients.`,
+    description: `Authentic ${meal.strArea || 'Gourmet'} ${meal.strMeal} prepared with fresh regional ingredients and traditional culinary techniques.`,
     category,
-    prepTimeMinutes: Math.floor(Math.random() * 10) + 10,
-    cookTimeMinutes: Math.floor(Math.random() * 20) + 15,
+    prepTimeMinutes: Math.min(45, Math.max(10, instructions.length * 4)),
+    cookTimeMinutes: Math.min(60, Math.max(15, instructions.length * 6)),
     servings: 4,
     difficulty: instructions.length > 5 ? 'Advanced' : instructions.length > 3 ? 'Medium' : 'Easy',
-    caloriesPerServing: Math.floor(Math.random() * 250) + 350,
+    caloriesPerServing: Math.floor(Math.random() * 200) + 380,
     rating: 4.8,
     reviewCount: Math.floor(Math.random() * 80) + 20,
     heroImage: meal.strMealThumb,
@@ -126,19 +152,19 @@ export function transformMealDBToRecipe(meal: MealDBItem): Recipe {
     ingredients,
     instructions,
     nutrition: {
-      proteinGrams: Math.floor(Math.random() * 25) + 15,
-      carbsGrams: Math.floor(Math.random() * 40) + 25,
-      fatGrams: Math.floor(Math.random() * 15) + 10,
-      fiberGrams: Math.floor(Math.random() * 6) + 2,
-      sodiumMg: Math.floor(Math.random() * 400) + 300,
-      sugarGrams: Math.floor(Math.random() * 8) + 2
+      proteinGrams: Math.floor(Math.random() * 25) + 18,
+      carbsGrams: Math.floor(Math.random() * 35) + 25,
+      fatGrams: Math.floor(Math.random() * 15) + 12,
+      fiberGrams: Math.floor(Math.random() * 6) + 3,
+      sodiumMg: Math.floor(Math.random() * 400) + 350,
+      sugarGrams: Math.floor(Math.random() * 6) + 2
     },
     dietaryBadges: [meal.strArea || 'Global Dish', 'Live API Verified'],
     tags
   };
 }
 
-export async function fetchRealRecipesFromApi(query: string = 'pasta'): Promise<Recipe[]> {
+export async function fetchRealRecipesFromApi(query: string = 'chicken'): Promise<Recipe[]> {
   try {
     const url = `https://www.themealdb.com/api/json/v1/1/search.php?s=${encodeURIComponent(query)}`;
     const response = await fetch(url);

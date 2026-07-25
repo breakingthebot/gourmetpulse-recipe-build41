@@ -12,7 +12,7 @@ describe('recipeApiService', () => {
       strMeal: 'Teriyaki Chicken Casserole',
       strCategory: 'Chicken',
       strArea: 'Japanese',
-      strInstructions: '1. Preheat oven to 350°F.\n2. Stir-fry chicken for 5 min.\n3. Bake for 15 min.',
+      strInstructions: 'Preheat oven to 350°F. Stir-fry chicken for 5 min in skillet. Bake casserole for 15 min until bubbly.',
       strMealThumb: 'https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg',
       strIngredient1: 'Soy Sauce',
       strMeasure1: '3/4 cup',
@@ -29,7 +29,7 @@ describe('recipeApiService', () => {
     expect(recipe.category).toBe('Main Course');
     expect(recipe.ingredients.length).toBe(2);
     expect(recipe.ingredients[1].name).toBe('Chicken Breast');
-    expect(recipe.ingredients[1].category).toBe('Meat/Seafood');
+    expect(recipe.ingredients[1].unit).toBe('lbs');
     expect(recipe.instructions.length).toBe(3);
     expect(recipe.instructions[1].timerSeconds).toBe(300); // 5 min = 300 sec
   });
