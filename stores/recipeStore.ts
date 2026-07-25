@@ -290,7 +290,10 @@ export const useRecipeStore = defineStore('recipe', {
 
     // Weekly Meal Planner State
     mealPlan: {} as Record<string, string>, // Key: "Monday-Breakfast", Value: recipeId
-    isMealPlannerOpen: false as boolean
+    isMealPlannerOpen: false as boolean,
+
+    // Pantry Inventory & Wacky Combos Helper State
+    isPantryHelperOpen: false as boolean
   }),
 
   getters: {
@@ -702,6 +705,15 @@ export const useRecipeStore = defineStore('recipe', {
         this.addRecipeToShoppingList(id);
       });
       this.isShoppingListDrawerOpen = true;
+    },
+
+    // Pantry Helper Actions
+    openPantryHelper() {
+      this.isPantryHelperOpen = true;
+    },
+
+    closePantryHelper() {
+      this.isPantryHelperOpen = false;
     },
 
     exportShoppingTextList(): string {

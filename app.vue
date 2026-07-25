@@ -13,6 +13,7 @@ import GroceryShoppingList from './components/GroceryShoppingList.vue';
 import RecipeSubmissionModal from './components/RecipeSubmissionModal.vue';
 import RecipeCookingModeModal from './components/RecipeCookingModeModal.vue';
 import WeeklyMealPlanner from './components/WeeklyMealPlanner.vue';
+import PantryInventoryHelper from './components/PantryInventoryHelper.vue';
 import './assets/css/main.css';
 
 const recipeStore = useRecipeStore();
@@ -36,6 +37,9 @@ onMounted(() => {
         </div>
 
         <div class="header-badge">
+          <button @click="recipeStore.openPantryHelper()" class="btn btn-secondary btn-sm" style="margin-right: 8px;">
+            🧺 Pantry & Wacky Combos
+          </button>
           <button @click="recipeStore.openMealPlanner()" class="btn btn-secondary btn-sm" style="margin-right: 8px;">
             📅 Weekly Meal Planner
           </button>
@@ -105,6 +109,9 @@ onMounted(() => {
 
     <!-- Interactive Weekly Meal Planner & Matrix Modal -->
     <WeeklyMealPlanner />
+
+    <!-- Kitchen Pantry Inventory & Wacky Combos Helper Modal -->
+    <PantryInventoryHelper />
 
     <!-- Footer -->
     <footer class="app-footer">

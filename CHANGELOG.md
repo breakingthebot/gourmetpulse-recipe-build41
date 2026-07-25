@@ -5,6 +5,14 @@ All notable changes to **Build 41 — GourmetPulse SEO Culinary Recipe Applicati
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.13.0] - 2026-07-25
+
+### Added
+- Integrated **Kitchen Pantry Inventory & Wacky Combo Ideas Helper** in `services/pantryService.ts` and `components/PantryInventoryHelper.vue`.
+- Added interactive pantry item chip builder with quick presets (`Avocado`, `Bacon`, `Chocolate`, `Cheese`, `Chicken`, `Peanut Butter`, `Sriracha`).
+- Added dual-tab navigation (`🍳 Matching Recipes` sorted by match %, `🤪 Wacky Flavor Combos` presenting creative flavor pairings like *Sriracha PB Toast* and *Dark Chocolate Avocado Mousse*).
+- Added unit tests in `services/pantryService.spec.ts`.
+
 ## [0.12.0] - 2026-07-25
 
 ### Added
