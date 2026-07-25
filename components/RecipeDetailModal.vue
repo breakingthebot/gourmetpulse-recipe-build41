@@ -11,6 +11,7 @@ import NutritionalMacroMeters from './NutritionalMacroMeters.vue';
 import RecipeReviewsSection from './RecipeReviewsSection.vue';
 import BeveragePairingRecommender from './BeveragePairingRecommender.vue';
 import RecipePriceEstimator from './RecipePriceEstimator.vue';
+import DietarySwapAssistant from './DietarySwapAssistant.vue';
 import SeoMetaJsonLd from './SeoMetaJsonLd.vue';
 
 const recipeStore = useRecipeStore();
@@ -102,6 +103,9 @@ const scaledIngredients = computed(() => {
 
         <!-- Sommelier Wine & Beverage Pairing Recommender -->
         <BeveragePairingRecommender :recipe-id="recipe.id" class="margin-bottom-calc" />
+
+        <!-- Culinary Substitution & Dietary Swaps Assistant -->
+        <DietarySwapAssistant :recipe-id="recipe.id" class="margin-bottom-calc" />
 
         <div class="detail-grid">
           <!-- Scaled Ingredient Checklist -->

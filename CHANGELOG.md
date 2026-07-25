@@ -5,6 +5,14 @@ All notable changes to **Build 41 — GourmetPulse SEO Culinary Recipe Applicati
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.0] - 2026-07-25
+
+### Added
+- Integrated **Culinary Substitution Assistant & Dietary Swaps** in `services/ingredientSubstitutionService.ts` and `components/DietarySwapAssistant.vue`.
+- Added dietary filter chips (`Dairy-Free`, `Gluten-Free`, `Low-Sodium`, `Vegan`, `Low-Carb`), replacement ratios, and chef flavor notes.
+- Embedded dietary swap assistant into `RecipeDetailModal.vue`.
+- Added unit tests in `services/ingredientSubstitutionService.spec.ts`.
+
 ## [0.11.0] - 2026-07-25
 
 ### Added
