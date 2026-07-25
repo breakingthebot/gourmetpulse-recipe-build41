@@ -1,5 +1,5 @@
 // stores/recipeStore.ts
-// Pinia store managing culinary recipe database, category filters, search query, modal state, serving multiplier scaling, step completion progress, interactive cooking countdown timers, printable grocery shopping list aggregator, and nutritional macro breakdown meters.
+// Pinia store managing culinary recipe database, category filters, search query, modal state, serving multiplier scaling, step completion progress, interactive cooking countdown timers, printable grocery shopping list aggregator, nutritional macro breakdown meters, and custom user recipe submission form.
 // Connects to: app.vue, components/*.vue
 // Created: 2026-07-25
 
@@ -243,7 +243,10 @@ export const useRecipeStore = defineStore('recipe', {
 
     // Grocery Shopping List State
     shoppingList: [] as ShoppingListItem[],
-    isShoppingListDrawerOpen: false as boolean
+    isShoppingListDrawerOpen: false as boolean,
+
+    // User Recipe Submission Form Modal State
+    isSubmissionModalOpen: false as boolean
   }),
 
   getters: {
@@ -501,8 +504,29 @@ export const useRecipeStore = defineStore('recipe', {
       this.shoppingList = [];
     },
 
-    toggleShoppingListDrawer() {
-      this.isShoppingListDrawerOpen = !this.isShoppingListDrawerOpen;
+    // User Recipe Submission Actions
+    openSubmissionModal() {
+      this.isSubmissionModalOpen = true;
+    },
+
+    closeSubmissionModal() {
+      this.isSubmissionModalOpen = false;
+    },
+
+    addCustomRecipe(recipeData: Omit<Recipe, 'id' | 'slug' | 'rating' | 'reviewCount'>) {
+      const id = `rec-custom-${Date.now()}`;
+      const slug = recipeData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+
+      const newRecipe: Recipe = {
+        ...recipeData,
+        id,
+        slug,
+        rating: 5.0,
+        reviewCount: 1
+      };
+
+      this.recipes.unshift(newRecipe);
+      this.isSubmissionModalOpen = false;
     },
 
     exportShoppingTextList(): string {

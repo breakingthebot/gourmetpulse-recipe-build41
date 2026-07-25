@@ -9,6 +9,7 @@ import RecipeFilterToolbar from './components/RecipeFilterToolbar.vue';
 import RecipeCard from './components/RecipeCard.vue';
 import RecipeDetailModal from './components/RecipeDetailModal.vue';
 import GroceryShoppingList from './components/GroceryShoppingList.vue';
+import RecipeSubmissionModal from './components/RecipeSubmissionModal.vue';
 import './assets/css/main.css';
 
 const recipeStore = useRecipeStore();
@@ -28,7 +29,9 @@ const recipeStore = useRecipeStore();
         </div>
 
         <div class="header-badge">
-          <span class="badge badge-medium">⚡ Nuxt 3 SSR + Schema.org</span>
+          <button @click="recipeStore.openSubmissionModal()" class="btn btn-primary btn-sm">
+            ➕ Submit Custom Recipe
+          </button>
         </div>
       </div>
     </header>
@@ -83,6 +86,9 @@ const recipeStore = useRecipeStore();
 
     <!-- Recipe Detail Overlay Modal -->
     <RecipeDetailModal />
+
+    <!-- User Recipe Creation Submission Modal -->
+    <RecipeSubmissionModal />
 
     <!-- Footer -->
     <footer class="app-footer">

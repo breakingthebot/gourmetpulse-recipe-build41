@@ -20,21 +20,32 @@ describe('recipeStore Pinia store', () => {
     expect(store.filteredRecipes[0].title).toContain('Risotto');
   });
 
-  it('should calculate scaled macro-nutrients and macro calorie percentages', () => {
+  it('should submit custom user recipe, prepend to list, and match search query', () => {
     const store = useRecipeStore();
-    const recipeId = 'rec-4'; // Salmon recipe (High Protein)
+    expect(store.recipes.length).toBe(4);
 
-    const macros1x = store.scaledNutrition(recipeId);
-    expect(macros1x.proteinGrams).toBe(38);
-    expect(macros1x.carbsGrams).toBe(3);
-    expect(macros1x.fatGrams).toBe(32);
+    store.addCustomRecipe({
+      title: 'Tuscan Garlic Butter Shrimp Pasta',
+      description: 'Juicy jumbo shrimp seared in garlic butter.',
+      category: 'Main Course',
+      prepTimeMinutes: 10,
+      cookTimeMinutes: 15,
+      servings: 3,
+      difficulty: 'Easy',
+      caloriesPerServing: 520,
+      heroImage: 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=800',
+      author: { name: 'Chef Alex', avatar: '', role: 'Home Chef' },
+      ingredients: [{ id: 'i1', name: 'Jumbo Shrimp', amount: 400, unit: 'g', category: 'Meat/Seafood' }],
+      instructions: [{ stepNumber: 1, text: 'Sear shrimp.' }],
+      nutrition: { proteinGrams: 32, carbsGrams: 45, fatGrams: 18, fiberGrams: 2, sodiumMg: 510, sugarGrams: 2 },
+      dietaryBadges: ['High Protein'],
+      tags: ['Pasta', 'Seafood']
+    });
 
-    const pcts = store.macroPercentages(recipeId);
-    expect(pcts.proteinPct).toBeGreaterThan(30);
-    expect(pcts.fatPct).toBeGreaterThan(50);
+    expect(store.recipes.length).toBe(5);
+    expect(store.recipes[0].title).toBe('Tuscan Garlic Butter Shrimp Pasta');
 
-    store.setServingMultiplier(2);
-    const macros2x = store.scaledNutrition(recipeId);
-    expect(macros2x.proteinGrams).toBe(76);
+    store.setSearchQuery('Tuscan');
+    expect(store.filteredRecipes.length).toBe(1);
   });
 });

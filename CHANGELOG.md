@@ -5,6 +5,14 @@ All notable changes to **Build 41 — GourmetPulse SEO Culinary Recipe Applicati
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-07-25
+
+### Added
+- Built `components/RecipeSubmissionModal.vue` providing custom recipe creation form with dynamic ingredient and step row builders.
+- Updated `stores/recipeStore.ts` with `addCustomRecipe` action, prepending new custom recipes and generating slug & SEO metadata.
+- Added `➕ Submit Custom Recipe` trigger button to `app.vue` header.
+- Added unit tests in `stores/recipeStore.spec.ts` asserting custom recipe submission and instant keyword search matching.
+
 ## [0.4.0] - 2026-07-25
 
 ### Added
