@@ -5,6 +5,15 @@ All notable changes to **Build 41 — GourmetPulse SEO Culinary Recipe Applicati
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.18.0] - 2026-07-25
+
+### Added
+- Integrated **Community Recipe Comments & Photo Upload Feed** in `services/communityReviewService.ts` and `components/RecipeCommunityFeed.vue`.
+- Added interactive review submission form (1-5 star picker, author name, comment, photo URL or preset photo selector).
+- Added community dish photo feed with author avatars, star ratings, chef badges, and like buttons (`❤️ Like`).
+- Embedded community feed into `RecipeDetailModal.vue`.
+- Added unit tests in `services/communityReviewService.spec.ts`.
+
 ## [0.17.0] - 2026-07-25
 
 ### Added

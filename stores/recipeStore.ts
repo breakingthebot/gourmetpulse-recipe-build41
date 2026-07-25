@@ -300,7 +300,10 @@ export const useRecipeStore = defineStore('recipe', {
     voiceNotes: {} as Record<string, Array<{ id: string; recipeId: string; text: string; category: string; createdAt: string }>>,
 
     // Unit Measurement System State ('US' | 'Metric')
-    unitSystem: 'US' as 'US' | 'Metric'
+    unitSystem: 'US' as 'US' | 'Metric',
+
+    // Community Recipe Comments & Photo Upload Feed State
+    communityReviews: {} as Record<string, Array<{ id: string; recipeId: string; authorName: string; authorAvatar: string; rating: number; comment: string; photoUrl?: string; userChefBadge: string; likesCount: number; createdAt: string }>>
   }),
 
   getters: {
@@ -756,6 +759,36 @@ export const useRecipeStore = defineStore('recipe', {
 
     toggleUnitSystem() {
       this.unitSystem = this.unitSystem === 'US' ? 'Metric' : 'US';
+    },
+
+    // Community Review Actions
+    addCommunityReview(recipeId: string, review: { authorName: string; rating: number; comment: string; photoUrl?: string }) {
+      if (!this.communityReviews[recipeId]) {
+        this.communityReviews[recipeId] = [];
+      }
+
+      this.communityReviews[recipeId].unshift({
+        id: `rev-${Date.now()}`,
+        recipeId,
+        authorName: review.authorName || 'Anonymous Home Cook',
+        authorAvatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120',
+        rating: review.rating,
+        comment: review.comment,
+        photoUrl: review.photoUrl,
+        userChefBadge: '🍳 Home Chef',
+        likesCount: 1,
+        createdAt: 'Just now'
+      });
+    },
+
+    likeCommunityReview(recipeId: string, reviewId: string) {
+      const list = this.communityReviews[recipeId];
+      if (list) {
+        const item = list.find((r) => r.id === reviewId);
+        if (item) {
+          item.likesCount++;
+        }
+      }
     },
 
     exportShoppingTextList(): string {

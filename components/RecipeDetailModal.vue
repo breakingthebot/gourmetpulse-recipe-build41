@@ -8,7 +8,7 @@ import { computed } from 'vue';
 import { useRecipeStore } from '../stores/recipeStore';
 import CookingTimerChecklist from './CookingTimerChecklist.vue';
 import NutritionalMacroMeters from './NutritionalMacroMeters.vue';
-import RecipeReviewsSection from './RecipeReviewsSection.vue';
+import RecipeCommunityFeed from './RecipeCommunityFeed.vue';
 import BeveragePairingRecommender from './BeveragePairingRecommender.vue';
 import RecipePriceEstimator from './RecipePriceEstimator.vue';
 import DietarySwapAssistant from './DietarySwapAssistant.vue';
@@ -118,8 +118,11 @@ const scaledIngredients = computed(() => {
           <p class="calc-hint">Servings: <strong>{{ recipe.servings * recipeStore.servingMultiplier }} portions</strong></p>
         </div>
 
-        <!-- Recipe Price & Cost Per Portion Estimator -->
+        <!-- Recipe Price Estimator -->
         <RecipePriceEstimator :recipe-id="recipe.id" class="margin-bottom-calc" />
+
+        <!-- Community Reviews & Food Photo Feed -->
+        <RecipeCommunityFeed :recipe-id="recipe.id" class="margin-bottom-calc" />
 
         <!-- Nutritional Micro-Macro Breakdown Visualizer -->
         <NutritionalMacroMeters :recipe-id="recipe.id" class="margin-bottom-calc" />
