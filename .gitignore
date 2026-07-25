@@ -1,0 +1,11 @@
+AGENTS.md
+BUILD_NOTES.md
+.env
+.env.*
+!.env.example
+node_modules/
+.output/
+.nuxt/
+dist/
+.DS_Store
+*.log

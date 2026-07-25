@@ -1,0 +1,25 @@
+{
+  "name": "Build_41",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "nuxt": "^4.5.0",
+    "vue": "^3.5.40",
+    "vue-router": "^5.2.0"
+  },
+  "devDependencies": {
+    "@pinia/nuxt": "^1.0.1",
+    "@vue/test-utils": "^2.4.11",
+    "happy-dom": "^20.11.1",
+    "pinia": "^4.0.2",
+    "vitest": "^4.1.10"
+  }
+}
