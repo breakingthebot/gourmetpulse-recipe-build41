@@ -293,7 +293,10 @@ export const useRecipeStore = defineStore('recipe', {
     isMealPlannerOpen: false as boolean,
 
     // Pantry Inventory & Wacky Combos Helper State
-    isPantryHelperOpen: false as boolean
+    isPantryHelperOpen: false as boolean,
+
+    // Hands-Free Kitchen Voice Notes State
+    voiceNotes: {} as Record<string, Array<{ id: string; recipeId: string; text: string; category: string; createdAt: string }>>
   }),
 
   getters: {
@@ -714,6 +717,27 @@ export const useRecipeStore = defineStore('recipe', {
 
     closePantryHelper() {
       this.isPantryHelperOpen = false;
+    },
+
+    // Voice Notes Taker Actions
+    addVoiceNote(recipeId: string, text: string, category: string = 'General Tip') {
+      if (!this.voiceNotes[recipeId]) {
+        this.voiceNotes[recipeId] = [];
+      }
+
+      this.voiceNotes[recipeId].unshift({
+        id: `vnote-${Date.now()}`,
+        recipeId,
+        text: text.trim(),
+        category,
+        createdAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      });
+    },
+
+    deleteVoiceNote(recipeId: string, noteId: string) {
+      if (this.voiceNotes[recipeId]) {
+        this.voiceNotes[recipeId] = this.voiceNotes[recipeId].filter((n) => n.id !== noteId);
+      }
     },
 
     exportShoppingTextList(): string {
