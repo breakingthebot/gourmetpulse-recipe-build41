@@ -1,5 +1,5 @@
 // stores/recipeStore.ts
-// Pinia store managing culinary recipe database, category filters, search query, modal state, serving multiplier scaling, step completion progress, interactive cooking countdown timers, and printable grocery shopping list aggregator.
+// Pinia store managing culinary recipe database, category filters, search query, modal state, serving multiplier scaling, step completion progress, interactive cooking countdown timers, printable grocery shopping list aggregator, and nutritional macro breakdown meters.
 // Connects to: app.vue, components/*.vue
 // Created: 2026-07-25
 
@@ -20,6 +20,15 @@ export interface CookingStep {
   tip?: string;
 }
 
+export interface NutritionInfo {
+  proteinGrams: number;
+  carbsGrams: number;
+  fatGrams: number;
+  fiberGrams: number;
+  sodiumMg: number;
+  sugarGrams: number;
+}
+
 export interface Recipe {
   id: string;
   title: string;
@@ -37,6 +46,8 @@ export interface Recipe {
   author: { name: string; avatar: string; role: string };
   ingredients: Ingredient[];
   instructions: CookingStep[];
+  nutrition: NutritionInfo;
+  dietaryBadges: string[];
   tags: string[];
 }
 
@@ -89,6 +100,15 @@ export const INITIAL_RECIPES: Recipe[] = [
       { stepNumber: 4, text: 'Ladle warm broth 1 cup at a time, stirring continuously until absorbed before adding the next ladle.', timerSeconds: 1080, tip: 'Constant stirring releases rice starches.' },
       { stepNumber: 5, text: 'Remove from heat, fold in Parmigiano-Reggiano and drizzle with white truffle oil before serving hot.', tip: 'Rest risotto for 1 minute before serving.' }
     ],
+    nutrition: {
+      proteinGrams: 14,
+      carbsGrams: 58,
+      fatGrams: 14,
+      fiberGrams: 4,
+      sodiumMg: 680,
+      sugarGrams: 3
+    },
+    dietaryBadges: ['Vegetarian', 'Fiber Rich', 'Low Sugar'],
     tags: ['Italian', 'Risotto', 'Truffle', 'Gourmet']
   },
   {
@@ -118,6 +138,15 @@ export const INITIAL_RECIPES: Recipe[] = [
       { stepNumber: 2, text: 'Sift ceremonial matcha powder and add almond milk; blend on high until velvety smooth.', timerSeconds: 60 },
       { stepNumber: 3, text: 'Pour into chilled bowls and arrange fresh fruit slices and seeds artfully.', tip: 'Serve immediately.' }
     ],
+    nutrition: {
+      proteinGrams: 8,
+      carbsGrams: 36,
+      fatGrams: 12,
+      fiberGrams: 9,
+      sodiumMg: 120,
+      sugarGrams: 14
+    },
+    dietaryBadges: ['Vegan', 'High Fiber', 'Antioxidant Boost'],
     tags: ['Matcha', 'Vegan', 'Breakfast', 'Superfood']
   },
   {
@@ -148,6 +177,15 @@ export const INITIAL_RECIPES: Recipe[] = [
       { stepNumber: 3, text: 'Divide batter into buttered ramekins and bake at 200°C (400°F) for exactly 12 minutes.', timerSeconds: 720, tip: 'Edges should be firm while center remains soft.' },
       { stepNumber: 4, text: 'Invert onto dessert plates, dust with powdered sugar, and serve immediately.', tip: 'Serve warm.' }
     ],
+    nutrition: {
+      proteinGrams: 7,
+      carbsGrams: 48,
+      fatGrams: 32,
+      fiberGrams: 5,
+      sodiumMg: 140,
+      sugarGrams: 34
+    },
+    dietaryBadges: ['Indulgent', 'Rich Antioxidants'],
     tags: ['French', 'Chocolate', 'Dessert', 'Baking']
   },
   {
@@ -177,6 +215,15 @@ export const INITIAL_RECIPES: Recipe[] = [
       { stepNumber: 3, text: 'Flip salmon, add butter, garlic, dill, lemon juice, and baste continuously for 3 minutes.', timerSeconds: 180 },
       { stepNumber: 4, text: 'Rest on warm plate for 2 minutes before serving.', timerSeconds: 120 }
     ],
+    nutrition: {
+      proteinGrams: 38,
+      carbsGrams: 3,
+      fatGrams: 32,
+      fiberGrams: 1,
+      sodiumMg: 420,
+      sugarGrams: 1
+    },
+    dietaryBadges: ['High Protein', 'Keto-Friendly', 'Omega-3 Rich', 'Low Carb'],
     tags: ['Seafood', 'Gluten-Free', 'Healthy', 'Low-Carb']
   }
 ];
@@ -238,6 +285,44 @@ export const useRecipeStore = defineStore('recipe', {
         const rec = state.recipes.find((r) => r.id === recipeId);
         if (!rec) return 0;
         return Math.round(rec.caloriesPerServing * state.servingMultiplier);
+      };
+    },
+
+    scaledNutrition: (state) => {
+      return (recipeId: string): NutritionInfo => {
+        const rec = state.recipes.find((r) => r.id === recipeId);
+        if (!rec) {
+          return { proteinGrams: 0, carbsGrams: 0, fatGrams: 0, fiberGrams: 0, sodiumMg: 0, sugarGrams: 0 };
+        }
+        const mult = state.servingMultiplier;
+        return {
+          proteinGrams: Math.round(rec.nutrition.proteinGrams * mult),
+          carbsGrams: Math.round(rec.nutrition.carbsGrams * mult),
+          fatGrams: Math.round(rec.nutrition.fatGrams * mult),
+          fiberGrams: Math.round(rec.nutrition.fiberGrams * mult),
+          sodiumMg: Math.round(rec.nutrition.sodiumMg * mult),
+          sugarGrams: Math.round(rec.nutrition.sugarGrams * mult)
+        };
+      };
+    },
+
+    macroPercentages: (state) => {
+      return (recipeId: string) => {
+        const rec = state.recipes.find((r) => r.id === recipeId);
+        if (!rec) return { proteinPct: 0, carbsPct: 0, fatPct: 0 };
+
+        const proteinKcal = rec.nutrition.proteinGrams * 4;
+        const carbsKcal = rec.nutrition.carbsGrams * 4;
+        const fatKcal = rec.nutrition.fatGrams * 9;
+        const totalKcal = proteinKcal + carbsKcal + fatKcal;
+
+        if (totalKcal === 0) return { proteinPct: 0, carbsPct: 0, fatPct: 0 };
+
+        return {
+          proteinPct: Math.round((proteinKcal / totalKcal) * 100),
+          carbsPct: Math.round((carbsKcal / totalKcal) * 100),
+          fatPct: Math.round((fatKcal / totalKcal) * 100)
+        };
       };
     },
 

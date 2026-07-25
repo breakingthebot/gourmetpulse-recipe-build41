@@ -7,6 +7,7 @@
 import { computed } from 'vue';
 import { useRecipeStore } from '../stores/recipeStore';
 import CookingTimerChecklist from './CookingTimerChecklist.vue';
+import NutritionalMacroMeters from './NutritionalMacroMeters.vue';
 
 const recipeStore = useRecipeStore();
 const recipe = computed(() => recipeStore.activeRecipe);
@@ -80,6 +81,9 @@ const scaledIngredients = computed(() => {
           </div>
           <p class="calc-hint">Servings: <strong>{{ recipe.servings * recipeStore.servingMultiplier }} portions</strong></p>
         </div>
+
+        <!-- Nutritional Micro-Macro Breakdown Visualizer -->
+        <NutritionalMacroMeters :recipe-id="recipe.id" class="margin-bottom-calc" />
 
         <div class="detail-grid">
           <!-- Scaled Ingredient Checklist -->
@@ -274,6 +278,10 @@ const scaledIngredients = computed(() => {
 }
 
 .calc-hint { font-size: 13px; color: var(--text-secondary); }
+
+.margin-bottom-calc {
+  margin-bottom: 24px;
+}
 
 .detail-grid {
   display: grid;

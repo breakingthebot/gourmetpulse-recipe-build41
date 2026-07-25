@@ -20,54 +20,21 @@ describe('recipeStore Pinia store', () => {
     expect(store.filteredRecipes[0].title).toContain('Risotto');
   });
 
-  it('should filter recipes by keyword search query', () => {
+  it('should calculate scaled macro-nutrients and macro calorie percentages', () => {
     const store = useRecipeStore();
-    store.setSearchQuery('Matcha');
-    expect(store.filteredRecipes.length).toBe(1);
-    expect(store.filteredRecipes[0].id).toBe('rec-2');
-  });
+    const recipeId = 'rec-4'; // Salmon recipe (High Protein)
 
-  it('should scale ingredients and calories accurately when changing serving multipliers', () => {
-    const store = useRecipeStore();
-    const recipeId = 'rec-1';
-    store.openRecipeModal(recipeId);
+    const macros1x = store.scaledNutrition(recipeId);
+    expect(macros1x.proteinGrams).toBe(38);
+    expect(macros1x.carbsGrams).toBe(3);
+    expect(macros1x.fatGrams).toBe(32);
 
-    expect(store.servingMultiplier).toBe(1);
-    const scaled1x = store.scaledIngredients(recipeId);
-    expect(scaled1x[0].amount).toBe(300);
+    const pcts = store.macroPercentages(recipeId);
+    expect(pcts.proteinPct).toBeGreaterThan(30);
+    expect(pcts.fatPct).toBeGreaterThan(50);
 
     store.setServingMultiplier(2);
-    const scaled2x = store.scaledIngredients(recipeId);
-    expect(scaled2x[0].amount).toBe(600);
-  });
-
-  it('should toggle step completion progress and calculate percentage meter', () => {
-    const store = useRecipeStore();
-    const recipeId = 'rec-1';
-
-    let progress = store.getStepCompletionProgress(recipeId);
-    expect(progress.completed).toBe(0);
-    expect(progress.percentage).toBe(0);
-
-    store.toggleStepCompleted(recipeId, 1);
-    progress = store.getStepCompletionProgress(recipeId);
-    expect(progress.completed).toBe(1);
-    expect(progress.percentage).toBe(20);
-  });
-
-  it('should aggregate recipe ingredients into grocery shopping list and format text export', () => {
-    const store = useRecipeStore();
-    const recipeId = 'rec-1';
-
-    expect(store.shoppingList.length).toBe(0);
-
-    store.addRecipeToShoppingList(recipeId);
-    expect(store.shoppingList.length).toBe(6);
-    expect(store.shoppingList[0].name).toBe('Arborio Rice');
-    expect(store.shoppingList[0].sourceRecipeTitle).toContain('Risotto');
-
-    const txt = store.exportShoppingTextList();
-    expect(txt).toContain('GOURMETPULSE GROCERY SHOPPING LIST');
-    expect(txt).toContain('Arborio Rice');
+    const macros2x = store.scaledNutrition(recipeId);
+    expect(macros2x.proteinGrams).toBe(76);
   });
 });

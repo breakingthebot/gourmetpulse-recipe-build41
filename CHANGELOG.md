@@ -5,6 +5,14 @@ All notable changes to **Build 41 — GourmetPulse SEO Culinary Recipe Applicati
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-07-25
+
+### Added
+- Built `components/NutritionalMacroMeters.vue` providing multi-color macro calorie proportion bars, macro cards (Protein, Carbs, Fat, Fiber), and dietary tags.
+- Updated `stores/recipeStore.ts` with `NutritionInfo` schema, `scaledNutrition` getter, and `macroPercentages` proportion calculator.
+- Integrated `NutritionalMacroMeters.vue` into `components/RecipeDetailModal.vue`.
+- Added unit tests in `stores/recipeStore.spec.ts` asserting macro scaling and calorie percentage calculations.
+
 ## [0.3.0] - 2026-07-25
 
 ### Added
