@@ -12,6 +12,7 @@ import RecipeReviewsSection from './RecipeReviewsSection.vue';
 import BeveragePairingRecommender from './BeveragePairingRecommender.vue';
 import RecipePriceEstimator from './RecipePriceEstimator.vue';
 import DietarySwapAssistant from './DietarySwapAssistant.vue';
+import CulinarySkillMeter from './CulinarySkillMeter.vue';
 import VoiceNotesDictator from './VoiceNotesDictator.vue';
 import SeoMetaJsonLd from './SeoMetaJsonLd.vue';
 import { generatePrintableRecipeHtml } from '../services/cookbookPdfService';
@@ -128,6 +129,9 @@ const scaledIngredients = computed(() => {
 
         <!-- Culinary Substitution & Dietary Swaps Assistant -->
         <DietarySwapAssistant :recipe-id="recipe.id" class="margin-bottom-calc" />
+
+        <!-- Culinary Technique & Skill Level Meter -->
+        <CulinarySkillMeter :recipe-id="recipe.id" class="margin-bottom-calc" />
 
         <!-- Hands-Free Kitchen Voice Notes Tator -->
         <VoiceNotesDictator :recipe-id="recipe.id" class="margin-bottom-calc" />

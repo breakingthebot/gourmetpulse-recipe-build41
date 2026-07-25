@@ -5,6 +5,15 @@ All notable changes to **Build 41 — GourmetPulse SEO Culinary Recipe Applicati
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.17.0] - 2026-07-25
+
+### Added
+- Integrated **Cooking Difficulty & Skill Level Meter** in `services/skillMeterService.ts` and `components/CulinarySkillMeter.vue`.
+- Added technical complexity score (1-100 gauge bar), culinary technique analysis (Searing, Deglazing, Emulsification, Knife Prep), and pro tips.
+- Added recommended chef gear checklist (`Sharp Chef Knife`, `Cast Iron Skillet`, `Whisk`, `Digital Thermometer`).
+- Embedded skill meter into `RecipeDetailModal.vue`.
+- Added unit tests in `services/skillMeterService.spec.ts`.
+
 ## [0.16.0] - 2026-07-25
 
 ### Added
