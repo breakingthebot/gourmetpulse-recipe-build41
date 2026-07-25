@@ -6,6 +6,7 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted } from 'vue';
 import { useRecipeStore } from '../stores/recipeStore';
+import VoiceStepAudioReader from './VoiceStepAudioReader.vue';
 
 const recipeStore = useRecipeStore();
 
@@ -99,6 +100,13 @@ onUnmounted(() => {
         <div class="step-badge">
           STEP {{ currentStep.stepNumber }}
         </div>
+
+        <!-- Voice-Guided Step Audio Reader -->
+        <VoiceStepAudioReader 
+          :step-index="recipeStore.cookingModeCurrentStepIndex" 
+          :total-steps="recipe.instructions.length" 
+          :step-text="currentStep.text" 
+        />
 
         <!-- Large Instruction Text -->
         <h2 class="instruction-text">
