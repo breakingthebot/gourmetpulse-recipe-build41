@@ -5,6 +5,14 @@ All notable changes to **Build 41 — GourmetPulse SEO Culinary Recipe Applicati
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.0] - 2026-07-25
+
+### Added
+- Integrated **Sommelier Wine & Beverage Pairing Recommender** in `services/beveragePairingService.ts` and `components/BeveragePairingRecommender.vue`.
+- Added category filters (`Red Wine`, `White Wine`, `Craft Beer`, `Non-Alcoholic`) and flavor match percentage badges.
+- Embedded beverage pairing cards into `RecipeDetailModal.vue`.
+- Added unit tests in `services/beveragePairingService.spec.ts`.
+
 ## [0.8.0] - 2026-07-25
 
 ### Added

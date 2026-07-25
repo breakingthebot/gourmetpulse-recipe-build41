@@ -9,6 +9,7 @@ import { useRecipeStore } from '../stores/recipeStore';
 import CookingTimerChecklist from './CookingTimerChecklist.vue';
 import NutritionalMacroMeters from './NutritionalMacroMeters.vue';
 import RecipeReviewsSection from './RecipeReviewsSection.vue';
+import BeveragePairingRecommender from './BeveragePairingRecommender.vue';
 import SeoMetaJsonLd from './SeoMetaJsonLd.vue';
 
 const recipeStore = useRecipeStore();
@@ -94,6 +95,9 @@ const scaledIngredients = computed(() => {
 
         <!-- Nutritional Micro-Macro Breakdown Visualizer -->
         <NutritionalMacroMeters :recipe-id="recipe.id" class="margin-bottom-calc" />
+
+        <!-- Sommelier Wine & Beverage Pairing Recommender -->
+        <BeveragePairingRecommender :recipe-id="recipe.id" class="margin-bottom-calc" />
 
         <div class="detail-grid">
           <!-- Scaled Ingredient Checklist -->
