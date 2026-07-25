@@ -12,6 +12,7 @@ import RecipeDetailModal from './components/RecipeDetailModal.vue';
 import GroceryShoppingList from './components/GroceryShoppingList.vue';
 import RecipeSubmissionModal from './components/RecipeSubmissionModal.vue';
 import RecipeCookingModeModal from './components/RecipeCookingModeModal.vue';
+import WeeklyMealPlanner from './components/WeeklyMealPlanner.vue';
 import './assets/css/main.css';
 
 const recipeStore = useRecipeStore();
@@ -35,6 +36,9 @@ onMounted(() => {
         </div>
 
         <div class="header-badge">
+          <button @click="recipeStore.openMealPlanner()" class="btn btn-secondary btn-sm" style="margin-right: 8px;">
+            📅 Weekly Meal Planner
+          </button>
           <button @click="recipeStore.openSubmissionModal()" class="btn btn-primary btn-sm">
             ➕ Submit Custom Recipe
           </button>
@@ -98,6 +102,9 @@ onMounted(() => {
 
     <!-- Fullscreen Hands-Free Cooking Mode Modal -->
     <RecipeCookingModeModal />
+
+    <!-- Interactive Weekly Meal Planner & Matrix Modal -->
+    <WeeklyMealPlanner />
 
     <!-- Footer -->
     <footer class="app-footer">

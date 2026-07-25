@@ -286,7 +286,11 @@ export const useRecipeStore = defineStore('recipe', {
     // Live API Integration State
     isLoadingApi: false as boolean,
     apiSearchQuery: 'chicken' as string,
-    apiStatusMessage: null as string | null
+    apiStatusMessage: null as string | null,
+
+    // Weekly Meal Planner State
+    mealPlan: {} as Record<string, string>, // Key: "Monday-Breakfast", Value: recipeId
+    isMealPlannerOpen: false as boolean
   }),
 
   getters: {
@@ -667,6 +671,37 @@ export const useRecipeStore = defineStore('recipe', {
       } finally {
         this.isLoadingApi = false;
       }
+    },
+
+    // Weekly Meal Planner Actions
+    openMealPlanner() {
+      this.isMealPlannerOpen = true;
+    },
+
+    closeMealPlanner() {
+      this.isMealPlannerOpen = false;
+    },
+
+    assignMealSlot(day: string, mealType: string, recipeId: string) {
+      const key = `${day}-${mealType}`;
+      this.mealPlan[key] = recipeId;
+    },
+
+    removeMealSlot(day: string, mealType: string) {
+      const key = `${day}-${mealType}`;
+      delete this.mealPlan[key];
+    },
+
+    clearMealPlan() {
+      this.mealPlan = {};
+    },
+
+    addMealPlanToShoppingList() {
+      const recipeIds = Object.values(this.mealPlan);
+      recipeIds.forEach((id) => {
+        this.addRecipeToShoppingList(id);
+      });
+      this.isShoppingListDrawerOpen = true;
     },
 
     exportShoppingTextList(): string {

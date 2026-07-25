@@ -5,6 +5,15 @@ All notable changes to **Build 41 — GourmetPulse SEO Culinary Recipe Applicati
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.0] - 2026-07-25
+
+### Added
+- Integrated **Interactive Weekly Meal Planner & Matrix** in `components/WeeklyMealPlanner.vue`.
+- Added 7-day calendar matrix (Monday through Sunday) for scheduling Breakfast, Lunch, and Dinner.
+- Added weekly summary banner displaying planned meal count, total weekly calories, and estimated weekly grocery budget.
+- Integrated `🛒 Add All Planned Meals to Grocery List` aggregator action in `stores/recipeStore.ts`.
+- Added unit tests in `components/WeeklyMealPlanner.spec.ts`.
+
 ## [0.10.0] - 2026-07-25
 
 ### Added
