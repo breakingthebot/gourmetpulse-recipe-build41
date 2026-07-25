@@ -10,6 +10,7 @@ import CookingTimerChecklist from './CookingTimerChecklist.vue';
 import NutritionalMacroMeters from './NutritionalMacroMeters.vue';
 import RecipeReviewsSection from './RecipeReviewsSection.vue';
 import BeveragePairingRecommender from './BeveragePairingRecommender.vue';
+import RecipePriceEstimator from './RecipePriceEstimator.vue';
 import SeoMetaJsonLd from './SeoMetaJsonLd.vue';
 
 const recipeStore = useRecipeStore();
@@ -92,6 +93,9 @@ const scaledIngredients = computed(() => {
           </div>
           <p class="calc-hint">Servings: <strong>{{ recipe.servings * recipeStore.servingMultiplier }} portions</strong></p>
         </div>
+
+        <!-- Recipe Price & Cost Per Portion Estimator -->
+        <RecipePriceEstimator :recipe-id="recipe.id" class="margin-bottom-calc" />
 
         <!-- Nutritional Micro-Macro Breakdown Visualizer -->
         <NutritionalMacroMeters :recipe-id="recipe.id" class="margin-bottom-calc" />

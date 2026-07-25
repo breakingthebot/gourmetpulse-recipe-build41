@@ -5,6 +5,14 @@ All notable changes to **Build 41 — GourmetPulse SEO Culinary Recipe Applicati
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.0] - 2026-07-25
+
+### Added
+- Integrated **Recipe Price & Cost Per Portion Estimator** in `services/priceEstimatorService.ts` and `components/RecipePriceEstimator.vue`.
+- Added multi-currency selector (`USD $`, `EUR €`, `GBP £`, `CAD $`), portion cost calculators, budget classification badges (`Budget Friendly 💲`, `Moderate 💲💲`, `Gourmet Luxury 💲💲💲`), and ingredient cost breakdown tables.
+- Embedded price estimator into `RecipeDetailModal.vue`.
+- Added unit tests in `services/priceEstimatorService.spec.ts`.
+
 ## [0.9.0] - 2026-07-25
 
 ### Added
