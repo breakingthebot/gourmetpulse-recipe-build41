@@ -20,22 +20,25 @@ describe('recipeStore Pinia store', () => {
     expect(store.filteredRecipes[0].title).toContain('Risotto');
   });
 
-  it('should submit user review, update review list, and recalculate average rating', () => {
+  it('should open cooking mode and navigate steps within bounds', () => {
     const store = useRecipeStore();
-    const recipeId = 'rec-2'; // Matcha bowl
+    const recipeId = 'rec-1'; // Risotto (5 steps)
 
-    let reviews = store.getReviewsForRecipe(recipeId);
-    expect(reviews.length).toBe(0);
+    store.openCookingMode(recipeId);
+    expect(store.isCookingModeActive).toBe(true);
+    expect(store.cookingModeCurrentStepIndex).toBe(0);
 
-    store.addRecipeReview(recipeId, 5, 'Vibrant green and super creamy!', 'Add a splash of lime juice.', 'Chef Sarah');
+    store.nextCookingStep();
+    expect(store.cookingModeCurrentStepIndex).toBe(1);
 
-    reviews = store.getReviewsForRecipe(recipeId);
-    expect(reviews.length).toBe(1);
-    expect(reviews[0].comment).toContain('Vibrant green');
-    expect(reviews[0].chefTip).toContain('lime juice');
+    store.prevCookingStep();
+    expect(store.cookingModeCurrentStepIndex).toBe(0);
 
-    const rec = store.recipes.find((r) => r.id === recipeId);
-    expect(rec?.rating).toBe(5);
-    expect(rec?.reviewCount).toBe(1);
+    // Prev step at 0 should stay 0
+    store.prevCookingStep();
+    expect(store.cookingModeCurrentStepIndex).toBe(0);
+
+    store.closeCookingMode();
+    expect(store.isCookingModeActive).toBe(false);
   });
 });

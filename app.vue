@@ -10,6 +10,7 @@ import RecipeCard from './components/RecipeCard.vue';
 import RecipeDetailModal from './components/RecipeDetailModal.vue';
 import GroceryShoppingList from './components/GroceryShoppingList.vue';
 import RecipeSubmissionModal from './components/RecipeSubmissionModal.vue';
+import RecipeCookingModeModal from './components/RecipeCookingModeModal.vue';
 import './assets/css/main.css';
 
 const recipeStore = useRecipeStore();
@@ -89,6 +90,9 @@ const recipeStore = useRecipeStore();
 
     <!-- User Recipe Creation Submission Modal -->
     <RecipeSubmissionModal />
+
+    <!-- Fullscreen Hands-Free Cooking Mode Modal -->
+    <RecipeCookingModeModal />
 
     <!-- Footer -->
     <footer class="app-footer">

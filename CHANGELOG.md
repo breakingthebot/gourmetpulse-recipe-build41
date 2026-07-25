@@ -5,6 +5,15 @@ All notable changes to **Build 41 — GourmetPulse SEO Culinary Recipe Applicati
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2026-07-25
+
+### Added
+- Built `components/RecipeCookingModeModal.vue` providing a high-contrast fullscreen presentation mode designed for kitchen counter tablets/mobiles.
+- Added step navigation controls (`◀ Previous`, `Next Step ▶`, step indicator dots), step timer countdowns, and completion toggles.
+- Updated `stores/recipeStore.ts` with `isCookingModeActive` state, `openCookingMode`, `closeCookingMode`, and step bounds checking actions.
+- Added `👨‍🍳 Cooking Mode` trigger buttons to `components/RecipeCard.vue` and `components/RecipeDetailModal.vue`.
+- Added unit tests in `stores/recipeStore.spec.ts` asserting cooking mode step navigation and bounds.
+
 ## [0.6.0] - 2026-07-25
 
 ### Added

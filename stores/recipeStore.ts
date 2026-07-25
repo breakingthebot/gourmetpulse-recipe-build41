@@ -1,5 +1,5 @@
 // stores/recipeStore.ts
-// Pinia store managing culinary recipe database, category filters, search query, modal state, serving multiplier scaling, step completion progress, interactive cooking countdown timers, printable grocery shopping list aggregator, nutritional macro breakdown meters, custom user recipe submission form, and user reviews with star rating pickers.
+// Pinia store managing culinary recipe database, category filters, search query, modal state, serving multiplier scaling, step completion progress, interactive cooking countdown timers, printable grocery shopping list aggregator, nutritional macro breakdown meters, custom user recipe submission form, user reviews with star rating pickers, and fullscreen hands-free cooking mode.
 // Connects to: app.vue, components/*.vue
 // Created: 2026-07-25
 
@@ -275,7 +275,12 @@ export const useRecipeStore = defineStore('recipe', {
     isSubmissionModalOpen: false as boolean,
 
     // User Reviews State
-    reviews: INITIAL_REVIEWS as Record<string, RecipeReview[]>
+    reviews: INITIAL_REVIEWS as Record<string, RecipeReview[]>,
+
+    // Fullscreen Cooking Presentation Mode State
+    isCookingModeActive: false as boolean,
+    cookingModeRecipeId: null as string | null,
+    cookingModeCurrentStepIndex: 0 as number
   }),
 
   getters: {
@@ -293,6 +298,11 @@ export const useRecipeStore = defineStore('recipe', {
     activeRecipeModal: (state): Recipe | null => {
       if (!state.activeRecipeModalId) return null;
       return state.recipes.find((r) => r.id === state.activeRecipeModalId) || null;
+    },
+
+    cookingModeRecipe: (state): Recipe | null => {
+      if (!state.cookingModeRecipeId) return null;
+      return state.recipes.find((r) => r.id === state.cookingModeRecipeId) || null;
     },
 
     isBookmarked: (state) => {
@@ -590,6 +600,39 @@ export const useRecipeStore = defineStore('recipe', {
         const sum = revs.reduce((acc, r) => acc + r.rating, 0);
         rec.rating = Math.round((sum / revs.length) * 10) / 10;
         rec.reviewCount = revs.length;
+      }
+    },
+
+    // Cooking Mode Actions
+    openCookingMode(recipeId: string, startStepIndex: number = 0) {
+      this.cookingModeRecipeId = recipeId;
+      this.cookingModeCurrentStepIndex = startStepIndex;
+      this.isCookingModeActive = true;
+    },
+
+    closeCookingMode() {
+      this.isCookingModeActive = false;
+      this.cookingModeRecipeId = null;
+      this.cookingModeCurrentStepIndex = 0;
+    },
+
+    nextCookingStep() {
+      const rec = this.cookingModeRecipe;
+      if (rec && this.cookingModeCurrentStepIndex < rec.instructions.length - 1) {
+        this.cookingModeCurrentStepIndex++;
+      }
+    },
+
+    prevCookingStep() {
+      if (this.cookingModeCurrentStepIndex > 0) {
+        this.cookingModeCurrentStepIndex--;
+      }
+    },
+
+    setCookingStep(index: number) {
+      const rec = this.cookingModeRecipe;
+      if (rec && index >= 0 && index < rec.instructions.length) {
+        this.cookingModeCurrentStepIndex = index;
       }
     },
 

@@ -80,6 +80,14 @@ const scaledIngredients = computed(() => {
               </button>
             </div>
           </div>
+          <div class="modal-actions-row">
+            <button @click="recipeStore.addRecipeToShoppingList(recipe.id)" class="btn btn-secondary btn-sm">
+              🛒 Add All to Grocery List
+            </button>
+            <button @click="recipeStore.openCookingMode(recipe.id)" class="btn btn-primary btn-sm">
+              👨‍🍳 Start Hands-Free Cooking Mode
+            </button>
+          </div>
           <p class="calc-hint">Servings: <strong>{{ recipe.servings * recipeStore.servingMultiplier }} portions</strong></p>
         </div>
 

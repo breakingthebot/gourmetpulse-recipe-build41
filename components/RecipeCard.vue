@@ -16,14 +16,14 @@ const recipeStore = useRecipeStore();
 <template>
   <div class="recipe-card card fade-in" @click="recipeStore.openRecipeModal(recipe.id)">
     <div class="card-image-wrapper">
-      <img :src="recipe.imageUrl" :alt="recipe.title" class="recipe-img" loading="lazy" />
+      <img :src="recipe.heroImage" :alt="recipe.title" class="recipe-img" loading="lazy" />
       <div class="card-overlay-badges">
         <span 
           class="badge" 
           :class="{
             'badge-easy': recipe.difficulty === 'Easy',
             'badge-medium': recipe.difficulty === 'Medium',
-            'badge-hard': recipe.difficulty === 'Hard'
+            'badge-hard': recipe.difficulty === 'Advanced'
           }"
         >
           {{ recipe.difficulty }}
@@ -31,10 +31,10 @@ const recipeStore = useRecipeStore();
         <button 
           @click.stop="recipeStore.toggleBookmark(recipe.id)" 
           class="bookmark-btn" 
-          :class="{ active: recipe.bookmarked }"
-          :title="recipe.bookmarked ? 'Remove Bookmark' : 'Save Recipe'"
+          :class="{ active: recipeStore.isBookmarked(recipe.id) }"
+          :title="recipeStore.isBookmarked(recipe.id) ? 'Remove Bookmark' : 'Save Recipe'"
         >
-          {{ recipe.bookmarked ? '⭐' : '☆' }}
+          {{ recipeStore.isBookmarked(recipe.id) ? '⭐' : '☆' }}
         </button>
       </div>
     </div>
@@ -42,18 +42,25 @@ const recipeStore = useRecipeStore();
     <div class="card-body">
       <div class="category-pill">{{ recipe.category }}</div>
       <h3 class="recipe-title">{{ recipe.title }}</h3>
-      <p class="recipe-subtitle">{{ recipe.subtitle }}</p>
+      <p class="recipe-subtitle">{{ recipe.description }}</p>
 
       <div class="card-footer-meta">
         <span class="meta-item">⏱️ {{ recipe.prepTimeMinutes + recipe.cookTimeMinutes }} mins</span>
         <span class="meta-item">🔥 {{ recipe.caloriesPerServing }} kcal</span>
-        <button 
-          @click.stop="recipeStore.addRecipeToShoppingList(recipe.id)" 
-          class="btn-add-shop"
-          title="Add ingredients to grocery shopping list"
-        >
-          🛒 Grocery List
+      </div>
+
+      <div class="card-actions">
+        <button @click.stop="recipeStore.openRecipeModal(recipe.id)" class="btn btn-primary btn-sm btn-full">
+          View Recipe Guide
         </button>
+        <div class="card-btn-row">
+          <button @click.stop="recipeStore.addRecipeToShoppingList(recipe.id)" class="btn btn-secondary btn-sm flex-1">
+            🛒 Grocery List
+          </button>
+          <button @click.stop="recipeStore.openCookingMode(recipe.id)" class="btn btn-secondary btn-sm flex-1">
+            👨‍🍳 Cooking Mode
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -165,20 +172,21 @@ const recipeStore = useRecipeStore();
   color: var(--text-muted);
 }
 
-.btn-add-shop {
-  background: rgba(245, 158, 11, 0.15);
-  border: 1px solid rgba(245, 158, 11, 0.3);
-  color: var(--accent-amber);
-  padding: 4px 8px;
-  border-radius: var(--radius-sm);
-  font-size: 11px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
+.card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
 }
 
-.btn-add-shop:hover {
-  background: var(--accent-amber);
-  color: #000;
+.card-btn-row {
+  display: flex;
+  gap: 8px;
 }
+
+.flex-1 {
+  flex: 1;
+}
+
+.btn-full { width: 100%; }
 </style>
