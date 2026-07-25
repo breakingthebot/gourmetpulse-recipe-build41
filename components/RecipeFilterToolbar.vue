@@ -32,12 +32,30 @@ function handleApiSearch() {
       />
     </div>
 
-    <div class="category-chips">
-      <button
-        v-for="cat in categories"
+    <!-- Category Chips Row -->
+    <div class="category-scroll-container">
+      <div class="unit-toggle-group">
+        <button 
+          @click="recipeStore.setUnitSystem('US')" 
+          class="unit-btn" 
+          :class="{ active: recipeStore.unitSystem === 'US' }"
+        >
+          🇺🇸 US Customary
+        </button>
+        <button 
+          @click="recipeStore.setUnitSystem('Metric')" 
+          class="unit-btn" 
+          :class="{ active: recipeStore.unitSystem === 'Metric' }"
+        >
+          🌍 Metric
+        </button>
+      </div>
+
+      <button 
+        v-for="cat in categories" 
         :key="cat"
-        @click="recipeStore.setSelectedCategory(cat)"
-        class="category-btn"
+        @click="recipeStore.setCategory(cat)"
+        class="category-chip"
         :class="{ active: recipeStore.selectedCategory === cat }"
       >
         {{ cat }}
@@ -117,7 +135,7 @@ function handleApiSearch() {
   box-shadow: 0 0 12px var(--accent-amber-glow);
 }
 
-.category-chips {
+.category-scroll-container {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -125,7 +143,33 @@ function handleApiSearch() {
   padding-bottom: 4px;
 }
 
-.chip-btn {
+.unit-toggle-group {
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 2px;
+  margin-right: 8px;
+}
+
+.unit-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 16px;
+  cursor: pointer;
+}
+
+.unit-btn.active {
+  background: var(--accent-amber);
+  color: #000;
+}
+
+.category-chip {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--border-color);
   color: var(--text-secondary);
@@ -139,12 +183,7 @@ function handleApiSearch() {
   transition: all 0.2s ease;
 }
 
-.chip-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--text-primary);
-}
-
-.category-btn.active {
+.category-chip.active {
   background: var(--accent-amber);
   color: #000;
   border-color: var(--accent-amber);

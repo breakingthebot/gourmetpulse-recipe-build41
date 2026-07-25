@@ -5,6 +5,14 @@ All notable changes to **Build 41 — GourmetPulse SEO Culinary Recipe Applicati
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.0] - 2026-07-25
+
+### Added
+- Integrated **Cookbook PDF Exporter & American Customary vs Metric Unit Converter** in `services/cookbookPdfService.ts`.
+- Added unit system switcher (`🇺🇸 US Customary` vs `🌍 Metric`) for instant volume/weight unit conversions (`lb` <-> `g`, `cup` <-> `ml`, `tbsp` <-> `ml`, `oz` <-> `g`).
+- Added printable HTML recipe card and PDF generator (`🖨️ Export Printable PDF Card`).
+- Added unit tests in `services/cookbookPdfService.spec.ts`.
+
 ## [0.15.0] - 2026-07-25
 
 ### Added

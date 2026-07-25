@@ -14,9 +14,25 @@ import RecipePriceEstimator from './RecipePriceEstimator.vue';
 import DietarySwapAssistant from './DietarySwapAssistant.vue';
 import VoiceNotesDictator from './VoiceNotesDictator.vue';
 import SeoMetaJsonLd from './SeoMetaJsonLd.vue';
+import { generatePrintableRecipeHtml } from '../services/cookbookPdfService';
 
 const recipeStore = useRecipeStore();
 const recipe = computed(() => recipeStore.activeRecipeModal);
+
+const scaledCalories = computed(() => {
+  if (!recipe.value) return 0;
+  return recipeStore.scaledCalories(recipe.value.id);
+});
+
+function handleExportPdf() {
+  if (!recipe.value) return;
+  const html = generatePrintableRecipeHtml(recipe.value, recipeStore.unitSystem);
+  const printWin = window.open('', '_blank');
+  if (printWin) {
+    printWin.document.write(html);
+    printWin.document.close();
+  }
+}
 
 const scaledIngredients = computed(() => {
   if (!recipe.value) return [];
@@ -89,6 +105,11 @@ const scaledIngredients = computed(() => {
             <button @click="recipeStore.addRecipeToShoppingList(recipe.id)" class="btn btn-secondary btn-sm">
               🛒 Add All to Grocery List
             </button>
+
+            <button @click="handleExportPdf" class="btn btn-secondary btn-sm">
+              🖨️ Export Printable PDF Card
+            </button>
+
             <button @click="recipeStore.openCookingMode(recipe.id)" class="btn btn-primary btn-sm">
               👨‍🍳 Start Hands-Free Cooking Mode
             </button>

@@ -5,6 +5,7 @@
 
 import { defineStore } from 'pinia';
 import { fetchRealRecipesFromApi } from '../services/recipeApiService';
+import { convertUnit } from '../services/cookbookPdfService';
 
 export interface Ingredient {
   id: string;
@@ -296,7 +297,10 @@ export const useRecipeStore = defineStore('recipe', {
     isPantryHelperOpen: false as boolean,
 
     // Hands-Free Kitchen Voice Notes State
-    voiceNotes: {} as Record<string, Array<{ id: string; recipeId: string; text: string; category: string; createdAt: string }>>
+    voiceNotes: {} as Record<string, Array<{ id: string; recipeId: string; text: string; category: string; createdAt: string }>>,
+
+    // Unit Measurement System State ('US' | 'Metric')
+    unitSystem: 'US' as 'US' | 'Metric'
   }),
 
   getters: {
@@ -331,10 +335,15 @@ export const useRecipeStore = defineStore('recipe', {
         if (!rec) return [];
 
         const mult = state.servingMultiplier;
-        return rec.ingredients.map((ing) => ({
-          ...ing,
-          amount: Math.round((ing.amount * mult) * 10) / 10
-        }));
+        return rec.ingredients.map((ing) => {
+          const rawScaledAmount = Math.round((ing.amount * mult) * 10) / 10;
+          const converted = convertUnit(rawScaledAmount, ing.unit, state.unitSystem);
+          return {
+            ...ing,
+            amount: converted.amount,
+            unit: converted.unit
+          };
+        });
       };
     },
 
@@ -738,6 +747,15 @@ export const useRecipeStore = defineStore('recipe', {
       if (this.voiceNotes[recipeId]) {
         this.voiceNotes[recipeId] = this.voiceNotes[recipeId].filter((n) => n.id !== noteId);
       }
+    },
+
+    // Unit System Actions
+    setUnitSystem(system: 'US' | 'Metric') {
+      this.unitSystem = system;
+    },
+
+    toggleUnitSystem() {
+      this.unitSystem = this.unitSystem === 'US' ? 'Metric' : 'US';
     },
 
     exportShoppingTextList(): string {
