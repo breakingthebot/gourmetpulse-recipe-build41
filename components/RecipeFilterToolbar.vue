@@ -4,10 +4,19 @@
 <!-- Created: 2026-07-24 -->
 
 <script setup lang="ts">
+import { ref } from 'vue';
 import { useRecipeStore } from '../stores/recipeStore';
 
 const recipeStore = useRecipeStore();
 const categories = ['All', 'Breakfast', 'Main Course', 'Dessert', 'Vegan', 'Gluten-Free'];
+
+const apiInput = ref('chicken');
+
+function handleApiSearch() {
+  if (apiInput.value.trim()) {
+    recipeStore.fetchLiveApiRecipes(apiInput.value.trim());
+  }
+}
 </script>
 
 <template>
@@ -27,12 +36,33 @@ const categories = ['All', 'Breakfast', 'Main Course', 'Dessert', 'Vegan', 'Glut
       <button
         v-for="cat in categories"
         :key="cat"
-        @click="recipeStore.setCategory(cat)"
-        class="chip-btn"
+        @click="recipeStore.setSelectedCategory(cat)"
+        class="category-btn"
         :class="{ active: recipeStore.selectedCategory === cat }"
       >
         {{ cat }}
       </button>
+    </div>
+
+    <!-- Live API Search Banner -->
+    <div class="api-banner card">
+      <div class="api-search-row">
+        <span class="api-lbl">🌐 Live Open Recipe API:</span>
+        <input 
+          v-model="apiInput" 
+          type="text" 
+          placeholder="Search free online recipes (e.g. pasta, curry, pie, steak)..." 
+          class="search-input api-input"
+          @keyup.enter="handleApiSearch"
+        />
+        <button @click="handleApiSearch" :disabled="recipeStore.isLoadingApi" class="btn btn-primary btn-sm">
+          {{ recipeStore.isLoadingApi ? '⏳ Fetching...' : '🔍 Search Live API' }}
+        </button>
+      </div>
+
+      <p v-if="recipeStore.apiStatusMessage" class="api-status">
+        {{ recipeStore.apiStatusMessage }}
+      </p>
     </div>
   </div>
 </template>
@@ -114,10 +144,42 @@ const categories = ['All', 'Breakfast', 'Main Course', 'Dessert', 'Vegan', 'Glut
   color: var(--text-primary);
 }
 
-.chip-btn.active {
-  background: rgba(245, 158, 11, 0.15);
+.category-btn.active {
+  background: var(--accent-amber);
+  color: #000;
   border-color: var(--accent-amber);
-  color: var(--accent-amber);
-  font-weight: 600;
+}
+
+.api-banner {
+  padding: 12px 16px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(15, 23, 42, 0.6));
+  border-color: rgba(16, 185, 129, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.api-search-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.api-lbl {
+  font-size: 13px;
+  font-weight: 700;
+  color: #10b981;
+}
+
+.api-input {
+  flex: 1;
+  min-width: 200px;
+}
+
+.api-status {
+  font-size: 12px;
+  color: var(--text-secondary);
 }
 </style>

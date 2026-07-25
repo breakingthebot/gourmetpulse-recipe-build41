@@ -1,9 +1,10 @@
 // stores/recipeStore.ts
-// Pinia store managing culinary recipe database, category filters, search query, modal state, serving multiplier scaling, step completion progress, interactive cooking countdown timers, printable grocery shopping list aggregator, nutritional macro breakdown meters, custom user recipe submission form, user reviews with star rating pickers, and fullscreen hands-free cooking mode.
-// Connects to: app.vue, components/*.vue
+// Pinia store managing culinary recipe database, category filters, search query, modal state, serving multiplier scaling, step completion progress, interactive cooking countdown timers, printable grocery shopping list aggregator, nutritional macro breakdown meters, custom user recipe submission form, user reviews with star rating pickers, fullscreen hands-free cooking mode, and live TheMealDB API integration.
+// Connects to: app.vue, components/*.vue, services/recipeApiService.ts
 // Created: 2026-07-25
 
 import { defineStore } from 'pinia';
+import { fetchRealRecipesFromApi } from '../services/recipeApiService';
 
 export interface Ingredient {
   id: string;
@@ -280,7 +281,12 @@ export const useRecipeStore = defineStore('recipe', {
     // Fullscreen Cooking Presentation Mode State
     isCookingModeActive: false as boolean,
     cookingModeRecipeId: null as string | null,
-    cookingModeCurrentStepIndex: 0 as number
+    cookingModeCurrentStepIndex: 0 as number,
+
+    // Live API Integration State
+    isLoadingApi: false as boolean,
+    apiSearchQuery: 'chicken' as string,
+    apiStatusMessage: null as string | null
   }),
 
   getters: {
@@ -633,6 +639,33 @@ export const useRecipeStore = defineStore('recipe', {
       const rec = this.cookingModeRecipe;
       if (rec && index >= 0 && index < rec.instructions.length) {
         this.cookingModeCurrentStepIndex = index;
+      }
+    },
+
+    // Live TheMealDB API Fetch Action
+    async fetchLiveApiRecipes(searchTerm: string = 'pasta') {
+      this.isLoadingApi = true;
+      this.apiSearchQuery = searchTerm;
+      this.apiStatusMessage = `Fetching real recipes from TheMealDB for "${searchTerm}"...`;
+
+      try {
+        const fetchedRecipes = await fetchRealRecipesFromApi(searchTerm);
+        if (fetchedRecipes.length > 0) {
+          // Prepend new API recipes, avoiding duplicates
+          fetchedRecipes.forEach((newRec) => {
+            const exists = this.recipes.some((r) => r.id === newRec.id || r.title.toLowerCase() === newRec.title.toLowerCase());
+            if (!exists) {
+              this.recipes.unshift(newRec);
+            }
+          });
+          this.apiStatusMessage = `Successfully fetched ${fetchedRecipes.length} live recipes!`;
+        } else {
+          this.apiStatusMessage = `No API recipes found for "${searchTerm}". Showing curated catalog.`;
+        }
+      } catch (err: any) {
+        this.apiStatusMessage = `Failed to fetch API recipes. Using local catalog.`;
+      } finally {
+        this.isLoadingApi = false;
       }
     },
 

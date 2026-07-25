@@ -5,6 +5,14 @@ All notable changes to **Build 41 — GourmetPulse SEO Culinary Recipe Applicati
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0] - 2026-07-25
+
+### Added
+- Integrated **TheMealDB free public API** in `services/recipeApiService.ts` to fetch real-world recipes on demand.
+- Updated `stores/recipeStore.ts` with `fetchLiveApiRecipes` action, mapping raw MealDB JSON into internal `Recipe` interfaces with timing, ingredient categories, instructions, and macro estimates.
+- Added **🌐 Search Live Open Recipe API** search bar to `components/RecipeFilterToolbar.vue`.
+- Added unit tests in `services/recipeApiService.spec.ts` asserting API JSON data transformations into structured recipe models.
+
 ## [0.7.0] - 2026-07-25
 
 ### Added
